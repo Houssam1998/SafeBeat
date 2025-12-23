@@ -1,0 +1,6 @@
+model,status,rules_count,clusters,locations,accuracy,classes,r2,mae
+association_rules,SUCCESS,2384.0,,,,,,
+kmeans,SUCCESS,,7.0,637.0,,,,
+knn,SUCCESS,,,,0.2761,10.0,,
+timeseries,SUCCESS,,,,,,0.5148763733799866,30.550026429196702
+random_forest,SUCCESS,,,,0.5964,,,

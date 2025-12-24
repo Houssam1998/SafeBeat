@@ -1,0 +1,173 @@
+{
+  "last_updated": "2025-12-24T17:18:00",
+  "source": "CAF Online / API Football",
+  "tournament": "AFCON 2025 Morocco",
+  
+  "matches": [
+    {
+      "match_id": 1,
+      "date": "21/12/2025",
+      "time": "21:00",
+      "team1": "Morocco",
+      "team2": "Comoros",
+      "score": "2-0",
+      "status": "Terminé",
+      "scorers": ["Brahim Díaz 55'", "Ayoub El Kaabi 74'"],
+      "stadium": "Prince Moulay Abdellah",
+      "attendance": 65000
+    },
+    {
+      "match_id": 2,
+      "date": "22/12/2025",
+      "time": "14:00",
+      "team1": "Mali",
+      "team2": "Zambia",
+      "score": "1-1",
+      "status": "Terminé",
+      "scorers": [],
+      "stadium": "Grand Stade de Marrakech",
+      "attendance": 38000
+    },
+    {
+      "match_id": 3,
+      "date": "22/12/2025",
+      "time": "17:00",
+      "team1": "Egypt",
+      "team2": "Zimbabwe",
+      "score": "2-1",
+      "status": "Terminé",
+      "scorers": [],
+      "stadium": "Stade Mohammed V",
+      "attendance": 42000
+    },
+    {
+      "match_id": 4,
+      "date": "22/12/2025",
+      "time": "20:00",
+      "team1": "South Africa",
+      "team2": "Angola",
+      "score": "2-1",
+      "status": "Terminé",
+      "scorers": [],
+      "stadium": "Stade Adrar",
+      "attendance": 35000
+    },
+    {
+      "match_id": 5,
+      "date": "23/12/2025",
+      "time": "14:00",
+      "team1": "Nigeria",
+      "team2": "Tanzania",
+      "score": "2-1",
+      "status": "Terminé",
+      "scorers": [],
+      "stadium": "Grand Stade de Tanger",
+      "attendance": 60000
+    },
+    {
+      "match_id": 6,
+      "date": "23/12/2025",
+      "time": "17:00",
+      "team1": "Tunisia",
+      "team2": "Uganda",
+      "score": "3-1",
+      "status": "Terminé",
+      "scorers": [],
+      "stadium": "Complexe Sportif de Fès",
+      "attendance": 40000
+    },
+    {
+      "match_id": 7,
+      "date": "23/12/2025",
+      "time": "20:00",
+      "team1": "Senegal",
+      "team2": "Botswana",
+      "score": "3-0",
+      "status": "Terminé",
+      "scorers": [],
+      "stadium": "Prince Moulay Abdellah",
+      "attendance": 55000
+    },
+    {
+      "match_id": 8,
+      "date": "24/12/2025",
+      "time": "14:00",
+      "team1": "DR Congo",
+      "team2": "Benin",
+      "score": "1-0",
+      "status": "Terminé",
+      "scorers": [],
+      "stadium": "Grand Stade de Marrakech",
+      "attendance": 32000
+    },
+    {
+      "match_id": 9,
+      "date": "24/12/2025",
+      "time": "17:00",
+      "team1": "Algeria",
+      "team2": "Sudan",
+      "score": null,
+      "status": "En cours",
+      "scorers": [],
+      "stadium": "Stade Mohammed V",
+      "attendance": null
+    },
+    {
+      "match_id": 10,
+      "date": "24/12/2025",
+      "time": "20:00",
+      "team1": "Burkina Faso",
+      "team2": "Equatorial Guinea",
+      "score": null,
+      "status": "À venir",
+      "scorers": [],
+      "stadium": "Stade Adrar",
+      "attendance": null
+    }
+  ],
+  
+  "standings": {
+    "Groupe A": [
+      {"team": "Morocco", "played": 1, "won": 1, "drawn": 0, "lost": 0, "gf": 2, "ga": 0, "gd": 2, "points": 3},
+      {"team": "Mali", "played": 1, "won": 0, "drawn": 1, "lost": 0, "gf": 1, "ga": 1, "gd": 0, "points": 1},
+      {"team": "Zambia", "played": 1, "won": 0, "drawn": 1, "lost": 0, "gf": 1, "ga": 1, "gd": 0, "points": 1},
+      {"team": "Comoros", "played": 1, "won": 0, "drawn": 0, "lost": 1, "gf": 0, "ga": 2, "gd": -2, "points": 0}
+    ],
+    "Groupe B": [
+      {"team": "Egypt", "played": 1, "won": 1, "drawn": 0, "lost": 0, "gf": 2, "ga": 1, "gd": 1, "points": 3},
+      {"team": "South Africa", "played": 1, "won": 1, "drawn": 0, "lost": 0, "gf": 2, "ga": 1, "gd": 1, "points": 3},
+      {"team": "Angola", "played": 1, "won": 0, "drawn": 0, "lost": 1, "gf": 1, "ga": 2, "gd": -1, "points": 0},
+      {"team": "Zimbabwe", "played": 1, "won": 0, "drawn": 0, "lost": 1, "gf": 1, "ga": 2, "gd": -1, "points": 0}
+    ],
+    "Groupe C": [
+      {"team": "Nigeria", "played": 1, "won": 1, "drawn": 0, "lost": 0, "gf": 2, "ga": 1, "gd": 1, "points": 3},
+      {"team": "Tunisia", "played": 1, "won": 1, "drawn": 0, "lost": 0, "gf": 3, "ga": 1, "gd": 2, "points": 3},
+      {"team": "Uganda", "played": 1, "won": 0, "drawn": 0, "lost": 1, "gf": 1, "ga": 3, "gd": -2, "points": 0},
+      {"team": "Tanzania", "played": 1, "won": 0, "drawn": 0, "lost": 1, "gf": 1, "ga": 2, "gd": -1, "points": 0}
+    ],
+    "Groupe D": [
+      {"team": "Senegal", "played": 1, "won": 1, "drawn": 0, "lost": 0, "gf": 3, "ga": 0, "gd": 3, "points": 3},
+      {"team": "DR Congo", "played": 1, "won": 1, "drawn": 0, "lost": 0, "gf": 1, "ga": 0, "gd": 1, "points": 3},
+      {"team": "Benin", "played": 1, "won": 0, "drawn": 0, "lost": 1, "gf": 0, "ga": 1, "gd": -1, "points": 0},
+      {"team": "Botswana", "played": 1, "won": 0, "drawn": 0, "lost": 1, "gf": 0, "ga": 3, "gd": -3, "points": 0}
+    ],
+    "Groupe E": [
+      {"team": "Algeria", "played": 0, "won": 0, "drawn": 0, "lost": 0, "gf": 0, "ga": 0, "gd": 0, "points": 0},
+      {"team": "Burkina Faso", "played": 0, "won": 0, "drawn": 0, "lost": 0, "gf": 0, "ga": 0, "gd": 0, "points": 0},
+      {"team": "Equatorial Guinea", "played": 0, "won": 0, "drawn": 0, "lost": 0, "gf": 0, "ga": 0, "gd": 0, "points": 0},
+      {"team": "Sudan", "played": 0, "won": 0, "drawn": 0, "lost": 0, "gf": 0, "ga": 0, "gd": 0, "points": 0}
+    ],
+    "Groupe F": [
+      {"team": "Ivory Coast", "played": 0, "won": 0, "drawn": 0, "lost": 0, "gf": 0, "ga": 0, "gd": 0, "points": 0},
+      {"team": "Cameroon", "played": 0, "won": 0, "drawn": 0, "lost": 0, "gf": 0, "ga": 0, "gd": 0, "points": 0},
+      {"team": "Gabon", "played": 0, "won": 0, "drawn": 0, "lost": 0, "gf": 0, "ga": 0, "gd": 0, "points": 0},
+      {"team": "Mozambique", "played": 0, "won": 0, "drawn": 0, "lost": 0, "gf": 0, "ga": 0, "gd": 0, "points": 0}
+    ]
+  },
+  
+  "update_instructions": {
+    "manual": "Modifier ce fichier JSON avec les nouveaux scores",
+    "api_endpoint": "https://api-football-v1.p.rapidapi.com/v3/fixtures?league=6&season=2025",
+    "caf_official": "https://www.cafonline.com/can-2025/"
+  }
+}

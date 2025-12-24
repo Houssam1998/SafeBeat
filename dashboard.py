@@ -143,8 +143,8 @@ def main():
     page = st.sidebar.radio(
         "Select Page",
         ["🏠 Overview", "🎯 Risk Analysis", "🍺 Alcohol Impact", "🌤️ Weather Correlation", 
-         "⏱️ Response Times", "🗺️ Zone Clustering", "📈 Time Series Forecast", 
-         "🔗 Association Rules", "🤖 ML Models Summary", "🎪 Festival Predictor",
+         "⏱️ Response Times", "🗺️ Zone Clustering", "🔥 Real-Time Heatmap", "📈 Time Series Forecast", 
+         "🔗 Association Rules", "🤖 ML Models Summary", "🎪 Festival Predictor", "🏆 CAN 2025 Morocco",
          "📑 Report Gallery", "📊 Raw Data"],
         label_visibility="collapsed"
     )
@@ -166,15 +166,20 @@ def main():
         show_response_times(data)
     elif page == "🗺️ Zone Clustering":
         show_zone_clustering(data)
+    elif page == "🔥 Real-Time Heatmap":
+        show_realtime_heatmap(data)
     elif page == "📈 Time Series Forecast":
         show_timeseries_forecast(data)
     elif page == "🔗 Association Rules":
-        show_association_rules(data)
+        show_association_rules_enhanced(data)
     elif page == "🤖 ML Models Summary":
         show_ml_summary(data)
     elif page == "🎪 Festival Predictor":
         from festival_predictor import show_festival_predictor
         show_festival_predictor()
+    elif page == "🏆 CAN 2025 Morocco":
+        from afcon_predictor import show_afcon_predictor
+        show_afcon_predictor()
     elif page == "📑 Report Gallery":
         show_report_gallery()
     elif page == "📊 Raw Data":
@@ -703,6 +708,176 @@ def show_report_gallery():
     except:
         st.warning("Rapport non trouvé")
 
+def show_realtime_heatmap(data):
+    """Real-Time Risk Heatmap with refresh button"""
+    st.header("🔥 Real-Time Risk Heatmap")
+    st.markdown("Carte thermique interactive des zones de risque avec simulation temps réel")
+    
+    # Refresh button
+    col1, col2, col3 = st.columns([1, 1, 2])
+    with col1:
+        if st.button("🔄 Rafraîchir les données", type="primary"):
+            st.cache_data.clear()
+            st.rerun()
+    
+    with col2:
+        time_range = st.selectbox(
+            "Période",
+            ["Dernières 24h", "Dernière semaine", "Dernier mois", "Tout"]
+        )
+    
+    # Load cluster data
+    if data['kmeans_clusters'].empty:
+        st.warning("Données de clustering non disponibles")
+        return
+    
+    clusters = data['kmeans_clusters'].copy()
+    
+    # Simulate time-based filtering
+    if time_range == "Dernières 24h":
+        sample_size = min(500, len(clusters))
+    elif time_range == "Dernière semaine":
+        sample_size = min(2000, len(clusters))
+    else:
+        sample_size = min(3000, len(clusters))
+    
+    clusters_sample = clusters.sample(n=sample_size, random_state=42)
+    
+    # Key metrics
+    st.markdown("---")
+    col1, col2, col3, col4 = st.columns(4)
+    
+    high_risk_count = len(clusters_sample[clusters_sample['risk_zone'] == 'HIGH_RISK'])
+    medium_risk_count = len(clusters_sample[clusters_sample['risk_zone'] == 'MEDIUM_RISK'])
+    low_risk_count = len(clusters_sample[clusters_sample['risk_zone'] == 'LOW_RISK'])
+    
+    with col1:
+        st.metric("🔴 Zones HIGH", high_risk_count)
+    with col2:
+        st.metric("🟠 Zones MEDIUM", medium_risk_count)
+    with col3:
+        st.metric("🟢 Zones LOW", low_risk_count)
+    with col4:
+        st.metric("📍 Total Points", len(clusters_sample))
+    
+    st.markdown("---")
+    
+    # Heatmap using density mapbox
+    st.subheader("🗺️ Carte Thermique des Risques")
+    
+    color_map = {'HIGH_RISK': '#ff4b4b', 'MEDIUM_RISK': '#ffa500', 'LOW_RISK': '#00cc00'}
+    
+    # Create density heatmap
+    fig = px.density_mapbox(
+        clusters_sample,
+        lat='latitude',
+        lon='longitude',
+        z='incident_count',
+        radius=20,
+        zoom=10,
+        mapbox_style='carto-darkmatter',
+        color_continuous_scale='YlOrRd',
+        title='Densité des Incidents - Heatmap'
+    )
+    fig.update_layout(height=500)
+    st.plotly_chart(fig, use_container_width=True)
+    
+    # Scatter map for categories
+    st.subheader("📍 Zones par Catégorie de Risque")
+    fig2 = px.scatter_mapbox(
+        clusters_sample,
+        lat='latitude',
+        lon='longitude',
+        color='risk_zone',
+        color_discrete_map=color_map,
+        size='incident_count',
+        size_max=15,
+        zoom=10,
+        mapbox_style='carto-positron',
+        hover_data=['incident_count', 'risk_zone']
+    )
+    fig2.update_layout(height=500)
+    st.plotly_chart(fig2, use_container_width=True)
+    
+    # Alert summary
+    if high_risk_count > 0:
+        st.error(f"⚠️ **{high_risk_count} zones à HAUT RISQUE** détectées - Attention requise!")
+
+def show_association_rules_enhanced(data):
+    """Enhanced Association Rules with Network Graph"""
+    st.header("🔗 Association Rules - Visualisation Avancée")
+    
+    if data['association_rules'].empty:
+        st.warning("Règles d'association non disponibles")
+        return
+    
+    rules = data['association_rules']
+    
+    # Filters
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        min_confidence = st.slider("Confiance min", 0.0, 1.0, 0.3)
+    with col2:
+        min_lift = st.slider("Lift min", 0.0, 5.0, 1.0)
+    with col3:
+        top_n = st.slider("Nombre de règles", 10, 50, 25)
+    
+    filtered = rules[(rules['confidence'] >= min_confidence) & (rules['lift'] >= min_lift)]
+    filtered = filtered.nlargest(top_n, 'lift')
+    
+    st.info(f"Affichage de {len(filtered)} règles sur {len(rules)}")
+    
+    st.markdown("---")
+    
+    # Tab layout for different visualizations
+    tab1, tab2, tab3 = st.tabs(["🕸️ Network Graph", "📊 Sankey Diagram", "🔢 Heatmap Matrix"])
+    
+    with tab1:
+        st.subheader("Graphe de Réseau des Règles")
+        st.markdown("**Interprétation**: Les nœuds représentent les items, les arêtes les règles. L'épaisseur = Lift.")
+        
+        # Import and create network graph
+        try:
+            from association_graph import create_association_network_graph
+            fig = create_association_network_graph(filtered, top_n=top_n, min_lift=min_lift)
+            st.plotly_chart(fig, use_container_width=True)
+        except Exception as e:
+            st.error(f"Erreur création graphe: {e}")
+            # Fallback to scatter
+            st.plotly_chart(
+                px.scatter(filtered, x='support', y='confidence', size='lift', 
+                          hover_data=['antecedents', 'consequents']),
+                use_container_width=True
+            )
+    
+    with tab2:
+        st.subheader("Diagramme de Flux Sankey")
+        st.markdown("**Interprétation**: Les flux montrent les associations antécédent → conséquent.")
+        
+        try:
+            from association_graph import create_sankey_rules
+            fig2 = create_sankey_rules(filtered, top_n=min(20, len(filtered)))
+            st.plotly_chart(fig2, use_container_width=True)
+        except Exception as e:
+            st.error(f"Erreur Sankey: {e}")
+    
+    with tab3:
+        st.subheader("Matrice des Métriques")
+        st.markdown("**Interprétation**: Comparaison Support/Confiance/Lift pour chaque règle.")
+        
+        try:
+            from association_graph import create_rules_matrix
+            fig3 = create_rules_matrix(filtered, top_n=min(15, len(filtered)))
+            st.plotly_chart(fig3, use_container_width=True)
+        except Exception as e:
+            st.error(f"Erreur matrice: {e}")
+    
+    # Table view
+    st.markdown("---")
+    st.subheader("📋 Détail des Règles")
+    display_rules = filtered[['antecedents', 'consequents', 'support', 'confidence', 'lift']].copy()
+    display_rules.columns = ['Antécédent', 'Conséquent', 'Support', 'Confiance', 'Lift']
+    st.dataframe(display_rules.round(3), use_container_width=True)
+
 if __name__ == "__main__":
     main()
-

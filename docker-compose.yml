@@ -1,0 +1,127 @@
+version: '3.8'
+
+services:
+  # ============================================
+  # MinIO - Data Lake (S3-compatible)
+  # ============================================
+  minio:
+    image: minio/minio:latest
+    container_name: safebeat-minio
+    ports:
+      - "9000:9000" # API
+      - "9001:9001" # Console
+    environment:
+      MINIO_ROOT_USER: safebeat_admin
+      MINIO_ROOT_PASSWORD: safebeat_secret_2024
+    volumes:
+      - minio_data:/data
+    command: server /data --console-address ":9001"
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:9000/minio/health/live" ]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+    networks:
+      - safebeat-network
+
+  # ============================================
+  # PostgreSQL + PostGIS - Geospatial Database
+  # ============================================
+  postgres:
+    image: postgis/postgis:15-3.3
+    container_name: safebeat-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: safebeat
+      POSTGRES_USER: safebeat_user
+      POSTGRES_PASSWORD: safebeat_db_2024
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./infrastructure/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U safebeat_user -d safebeat" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - safebeat-network
+
+  # ============================================
+  # Apache Airflow - Orchestration
+  # ============================================
+  airflow-webserver:
+    build:
+      context: ./infrastructure/airflow
+      dockerfile: Dockerfile
+    image: safebeat-airflow:latest
+    container_name: safebeat-airflow-webserver
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://safebeat_user:safebeat_db_2024@postgres:5432/safebeat
+      AIRFLOW__CORE__FERNET_KEY: 'pJlLM2s6EJLh9CknZ_63E-VZGxvz_7sMCxkL9eN8d-g='
+      AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
+      AIRFLOW__WEBSERVER__SECRET_KEY: 'safebeat_airflow_secret_key_2024'
+      AIRFLOW__WEBSERVER__WTF_CSRF_ENABLED: 'false'
+      AIRFLOW__API__AUTH_BACKENDS: 'airflow.api.auth.backend.basic_auth'
+      _AIRFLOW_DB_MIGRATE: 'true'
+      _AIRFLOW_WWW_USER_CREATE: 'true'
+      _AIRFLOW_WWW_USER_USERNAME: admin
+      _AIRFLOW_WWW_USER_PASSWORD: safebeat_admin
+    volumes:
+      - ./infrastructure/airflow/dags:/opt/airflow/dags
+      - airflow_logs:/opt/airflow/logs
+    command: >
+      bash -c "
+        airflow db migrate &&
+        airflow users create --username admin --password safebeat_admin --firstname Admin --lastname User --role Admin --email admin@safebeat.local || true &&
+        airflow webserver
+      "
+    networks:
+      - safebeat-network
+
+  airflow-scheduler:
+    image: safebeat-airflow:latest
+    container_name: safebeat-airflow-scheduler
+    depends_on:
+      - airflow-webserver
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://safebeat_user:safebeat_db_2024@postgres:5432/safebeat
+      AIRFLOW__CORE__FERNET_KEY: 'pJlLM2s6EJLh9CknZ_63E-VZGxvz_7sMCxkL9eN8d-g='
+      AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
+    volumes:
+      - ./infrastructure/airflow/dags:/opt/airflow/dags
+      - airflow_logs:/opt/airflow/logs
+    command: airflow scheduler
+    networks:
+      - safebeat-network
+
+volumes:
+  minio_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: D:/docker-data/safebeat/minio
+  postgres_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: D:/docker-data/safebeat/postgres
+  airflow_logs:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: D:/docker-data/safebeat/airflow-logs
+
+networks:
+  safebeat-network:
+    driver: bridge
